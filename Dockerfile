@@ -3,10 +3,15 @@ FROM rust:1.90 as builder
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    libgtk-3-dev \
+    libwebkit2gtk-4.1-dev \
+    build-essential \
+    curl \
+    wget \
+    file \
+    libxdo-dev \
     libssl-dev \
-    pkg-config \
-    build-essential
+    libayatana-appindicator3-dev \
+    librsvg2-dev
 
 WORKDIR /app
 
