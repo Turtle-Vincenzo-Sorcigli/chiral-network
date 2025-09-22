@@ -1,7 +1,8 @@
 FROM rust:1.90 as builder
 
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update --fix-missing && \
+    apt-get install -y --no-install-recommends \
     pkg-config \
     libgtk-3-dev \
     libcairo2-dev \
@@ -9,8 +10,8 @@ RUN apt-get update && apt-get install -y \
     libgdk-pixbuf2.0-dev \
     libpango1.0-dev \
     libatk1.0-dev \
-    libx11-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libx11-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
 WORKDIR /app
@@ -21,7 +22,7 @@ RUN cd src-tauri && cargo build --release
 
 # ---
 
-FROM debian:bullseye-slim
+FROM debian:trixie-slim
 
 WORKDIR /app
 
