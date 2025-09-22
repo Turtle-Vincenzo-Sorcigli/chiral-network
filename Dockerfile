@@ -4,8 +4,6 @@ WORKDIR /app
 
 # Copy source and build the binary
 COPY src-tauri /app/src-tauri
-COPY Cargo.toml /app/
-COPY Cargo.lock /app/
 RUN cd src-tauri && cargo build --release
 
 # ---
