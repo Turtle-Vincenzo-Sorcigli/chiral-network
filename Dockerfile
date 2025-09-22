@@ -1,5 +1,18 @@
 FROM rust:1.90 as builder
 
+
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libgtk-3-dev \
+    libcairo2-dev \
+    libglib2.0-dev \
+    libgdk-pixbuf2.0-dev \
+    libpango1.0-dev \
+    libatk1.0-dev \
+    libx11-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
 WORKDIR /app
 
 # Copy source and build the binary
