@@ -14,11 +14,10 @@ steps:
       image: docker:24
       volumes:
           - /var/run/docker.sock:/var/run/docker.sock
-      environment:
-          - DHT_PORT=14001 # Can be set in GUI
-          - ENABLE_GETH= # Set to "true" to enable geth
-          - GETH_PORT=18545 # Can be set in GUI
       commands:
+          - export DHT_PORT=14001 # Can be set in GUI
+          - export ENABLE_GETH= # Set to "true" to enable geth
+          - export GETH_PORT=18545 # Can be set in GUI
           - docker stop chiral-bootstrap || true
           - docker rm chiral-bootstrap || true
           - >
