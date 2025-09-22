@@ -1,0 +1,26 @@
+when:
+    - event: push
+      branch: host
+
+steps:
+    - name: deploy
+      image: docker:24
+      volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+      commands:
+          # Set environment variables for deployment
+          - export DHT_PORT=14001 # can also come from Woodpecker GUI secrets
+          - export ENABLE_GETH= # set "true" if you want Geth enabled
+          - export GETH_PORT=18545 # optional, your Dockerfile doesn't use this directly
+
+          # Stop and remove previous container if it exists
+          - docker stop chiral-bootstrap || true
+          - docker rm chiral-bootstrap || true
+
+          # Run the new container
+          - docker run -d \
+            --name chiral-bootstrap \
+            -p ${DHT_PORT}:4001 \
+            ${ENABLE_GETH:+-p ${GETH_PORT}:8545} \
+            -e ENABLE_GETH=${ENABLE_GETH} \
+            chiral-network:latest

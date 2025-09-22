@@ -5,24 +5,6 @@ when:
 steps:
     - name: build
       image: docker:24
-      volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
       commands:
+          # Build the Docker image from your Dockerfile
           - docker build -t chiral-network:latest -f Dockerfile .
-
-    - name: deploy
-      image: docker:24
-      volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-      commands:
-          - export DHT_PORT=14001 # Can be set in GUI
-          - export ENABLE_GETH= # Set to "true" to enable geth
-          - export GETH_PORT=18545 # Can be set in GUI
-          - docker stop chiral-bootstrap || true
-          - docker rm chiral-bootstrap || true
-          - >
-              docker run -d --name chiral-bootstrap
-              -p ${DHT_PORT}:4001
-              ${ENABLE_GETH:+-p ${GETH_PORT}:8545}
-              -e ENABLE_GETH=${ENABLE_GETH}
-              chiral-network:latest
