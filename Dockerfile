@@ -43,6 +43,11 @@ WORKDIR /app
 # Copy the built binary
 COPY --from=builder /app/src-tauri/target/release/chiral-network /usr/local/bin/chiral-network
 
+# Copy geth binary from host machine to the container
+RUN mkdir -p /usr/local/bin/bin
+COPY ./geth /usr/local/bin/bin/geth
+RUN chmod +x /usr/local/bin/bin/geth
+
 EXPOSE 4001 
 EXPOSE 8545
 
