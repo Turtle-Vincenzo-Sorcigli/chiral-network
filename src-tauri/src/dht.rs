@@ -2830,7 +2830,17 @@ async fn run_dht_node(
                                         info!("✅ This is a ROOT BLOCK for file: {}", metadata.merkle_root);
 
                                         // This is the root block containing CIDs - parse and request all data blocks
-                                        match serde_json::from_slice::<Vec<Cid>>(&data) {
+                                        match serde_json::from_slice::<Vec<String>>(&data)
+                                        {
+                                            Ok(cid_strings) => {
+
+                                                let cids = cid_strings
+                                                    .into_iter()
+                                                    .map(|s| Cid::try_from(s.as_str()))
+                                                    .collect::<Result<Vec<_>, _>>();
+
+                                                match cids {
+
                                             Ok(cids) => {
 
                                                 // Create queries map for this file's data blocks
@@ -2905,6 +2915,12 @@ async fn run_dht_node(
                                         }
                                     }
 
+                                                    }
+
+                                                    Err(e) => {
+                                                        error!("Failed to parse CIDs for file {}: {}", metadata.merkle_root, e);
+                                                    }
+                                                }   
                                             }
                                             Err(e) => {
                                                 error!("Failed to parse root block as CIDs array for file {}: {}",
@@ -6369,6 +6385,7 @@ impl DhtService {
         file_metadata: FileMetadata,
         download_path: String,
     ) -> Result<(), String> {
+
         self.cmd_tx
             .send(DhtCommand::DownloadFile(file_metadata, download_path))
             .await
